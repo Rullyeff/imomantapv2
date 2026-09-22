@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Search, KeyRound } from "lucide-react";
+import { Search, KeyRound, UserRound } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { resetUserPassword } from "@/lib/admin-users.functions";
 
@@ -25,6 +25,17 @@ type Row = {
   phone_number: string | null;
   is_verified: boolean | null;
   role: string;
+  age: number | null;
+  gender: string | null;
+  weight: number | null;
+  height: number | null;
+  address: string | null;
+  emergency_contact: string | null;
+  target_sistolik: number | null;
+  target_diastolik: number | null;
+  target_gula_puasa: number | null;
+  target_gula_pp: number | null;
+  target_asam_urat: number | null;
 };
 
 function UsersAdmin() {
@@ -51,7 +62,7 @@ function UsersAdmin() {
 
   async function load() {
     const [{ data: profs }, { data: roles }] = await Promise.all([
-      supabase.from("profiles").select("user_id, full_name, phone_number, is_verified"),
+      supabase.from("profiles").select("user_id, full_name, phone_number, is_verified, age, gender, weight, height, address, emergency_contact, target_sistolik, target_diastolik, target_gula_puasa, target_gula_pp, target_asam_urat"),
       supabase.from("user_roles").select("user_id, role"),
     ]);
     const roleMap: Record<string, string> = {};
