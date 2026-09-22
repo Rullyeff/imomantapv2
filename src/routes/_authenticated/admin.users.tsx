@@ -55,6 +55,7 @@ function UsersAdmin() {
   const [resetting, setResetting] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
   const resetPassword = useServerFn(resetUserPassword);
+  const fetchEmails = useServerFn(getUserEmails);
 
   async function handleReset(r: Row) {
     const pw = window.prompt(
@@ -73,15 +74,31 @@ function UsersAdmin() {
   }
 
   async function load() {
-    const [{ data: profs }, { data: roles }] = await Promise.all([
+    const [{ data: profs }, { data: roles }, { data: scr }] = await Promise.all([
       supabase.from("profiles").select("user_id, full_name, phone_number, is_verified, age, gender, weight, height, address, emergency_contact, target_sistolik, target_diastolik, target_gula_puasa, target_gula_pp, target_asam_urat"),
       supabase.from("user_roles").select("user_id, role"),
+      supabase.from("health_screenings").select("user_id, respondent_code").not("user_id", "is", null),
     ]);
     const roleMap: Record<string, string> = {};
     (roles ?? []).forEach((r: any) => {
       roleMap[r.user_id] = r.role;
     });
-    setRows(((profs ?? []) as any[]).map((p) => ({ ...p, role: roleMap[p.user_id] || "pasien" })));
+    const kodeMap: Record<string, string> = {};
+    (scr ?? []).forEach((s: any) => {
+      if (s.user_id && !kodeMap[s.user_id]) kodeMap[s.user_id] = s.respondent_code;
+    });
+    const base = ((profs ?? []) as any[]).map((p) => ({
+      ...p,
+      role: roleMap[p.user_id] || "pasien",
+      kode: kodeMap[p.user_id] ?? null,
+    }));
+    setRows(base);
+    try {
+      const emailMap = await fetchEmails({ data: { userIds: base.map((b: any) => b.user_id) } });
+      setRows((prev) => prev.map((r) => ({ ...r, email: emailMap[r.user_id] })));
+    } catch {
+      /* email hanya untuk admin */
+    }
   }
   useEffect(() => {
     load();
