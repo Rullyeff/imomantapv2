@@ -13,7 +13,7 @@ import {
 import { toast } from "sonner";
 import { Search, KeyRound, UserRound } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { resetUserPassword } from "@/lib/admin-users.functions";
+import { resetUserPassword, getUserEmails } from "@/lib/admin-users.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/users")({
   component: UsersAdmin,
@@ -45,6 +45,8 @@ type Row = {
   target_gula_puasa: number | null;
   target_gula_pp: number | null;
   target_asam_urat: number | null;
+  email?: string;
+  kode?: string | null;
 };
 
 function UsersAdmin() {
