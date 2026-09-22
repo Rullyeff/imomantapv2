@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import JSZip from "jszip";
 import {
@@ -14,12 +14,21 @@ import {
   CloudUpload,
   HardDriveDownload,
   RefreshCw,
+  CalendarClock,
+  Activity,
+  CircleSlash,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { exportAllData } from "@/lib/backup.functions";
 import { restoreAllData } from "@/lib/restore.functions";
-import { backupToDrive, listDriveBackupFiles, fetchDriveBackup } from "@/lib/drive.functions";
+import {
+  backupToDrive,
+  listDriveBackupFiles,
+  fetchDriveBackup,
+  getAutoBackupSettings,
+  setAutoBackupMode,
+} from "@/lib/drive.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/backup")({
   component: BackupPage,
@@ -240,6 +249,8 @@ function BackupPage() {
 
       <DriveBackupCard />
 
+      <AutoBackupCard />
+
 
       {last && (
         <div className="rounded-lg border bg-card p-4">
@@ -322,6 +333,111 @@ function DriveBackupCard() {
               </a>
             </>
           ) : null}
+        </p>
+      )}
+    </div>
+  );
+}
+
+type AutoMode = "off" | "daily" | "activity";
+
+const AUTO_OPTIONS: { mode: AutoMode; icon: typeof CalendarClock; title: string; desc: string }[] = [
+  {
+    mode: "daily",
+    icon: CalendarClock,
+    title: "Setiap hari jam 12 malam",
+    desc: "Cadangan otomatis tersimpan ke Google Drive tiap pukul 00.00 WIB.",
+  },
+  {
+    mode: "activity",
+    icon: Activity,
+    title: "Setiap ada kegiatan",
+    desc: "Sistem memeriksa tiap jam; cadangan dibuat hanya bila ada data baru atau perubahan.",
+  },
+  {
+    mode: "off",
+    icon: CircleSlash,
+    title: "Nonaktif",
+    desc: "Tidak ada cadangan otomatis. Anda tetap bisa backup manual kapan saja.",
+  },
+];
+
+function AutoBackupCard() {
+  const load = useServerFn(getAutoBackupSettings);
+  const save = useServerFn(setAutoBackupMode);
+  const [settings, setSettings] = useState<{
+    mode: AutoMode;
+    last_run_at: string | null;
+    last_file: string | null;
+  } | null>(null);
+  const [saving, setSaving] = useState<AutoMode | null>(null);
+
+  useEffect(() => {
+    load({ data: undefined as never })
+      .then((s: any) => setSettings(s))
+      .catch(() => setSettings({ mode: "off", last_run_at: null, last_file: null }));
+  }, [load]);
+
+  async function pick(mode: AutoMode) {
+    setSaving(mode);
+    try {
+      const res: any = await save({ data: { mode } });
+      setSettings(res);
+      toast.success(
+        mode === "off" ? "Backup otomatis dimatikan" : "Backup otomatis diaktifkan",
+      );
+    } catch (e: any) {
+      toast.error(e?.message ?? "Gagal menyimpan pengaturan");
+    } finally {
+      setSaving(null);
+    }
+  }
+
+  return (
+    <div className="rounded-lg border bg-card p-4">
+      <div className="flex items-center gap-2">
+        <RefreshCw className="h-5 w-5 text-primary" />
+        <h2 className="font-semibold">Backup Otomatis</h2>
+      </div>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Pilih kapan sistem menyimpan cadangan ke Google Drive tanpa perlu ditekan manual.
+      </p>
+
+      <div className="mt-4 grid gap-3 md:grid-cols-3">
+        {AUTO_OPTIONS.map((o) => {
+          const active = settings?.mode === o.mode;
+          return (
+            <div
+              key={o.mode}
+              className={`rounded-lg border p-3 flex flex-col ${active ? "border-primary bg-primary/5" : ""}`}
+            >
+              <o.icon className="h-5 w-5 text-primary" />
+              <h3 className="mt-2 text-sm font-semibold">{o.title}</h3>
+              <p className="mt-1 flex-1 text-xs text-muted-foreground">{o.desc}</p>
+              <Button
+                className="mt-3"
+                size="sm"
+                variant={active ? "default" : "outline"}
+                disabled={saving !== null || settings === null}
+                onClick={() => pick(o.mode)}
+              >
+                {saving === o.mode ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : active ? (
+                  "Aktif"
+                ) : (
+                  "Pilih"
+                )}
+              </Button>
+            </div>
+          );
+        })}
+      </div>
+
+      {settings?.last_run_at && (
+        <p className="mt-3 text-xs text-muted-foreground">
+          Cadangan otomatis terakhir: {new Date(settings.last_run_at).toLocaleString("id-ID")}
+          {settings.last_file ? ` — ${settings.last_file}` : ""}
         </p>
       )}
     </div>

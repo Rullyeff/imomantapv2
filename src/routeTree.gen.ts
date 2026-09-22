@@ -37,6 +37,7 @@ import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authentic
 import { Route as ApiPublicHooksMedicationRemindersRouteImport } from './routes/api/public/hooks/medication-reminders'
 import { Route as ApiPublicHooksMarkMissedRouteImport } from './routes/api/public/hooks/mark-missed'
 import { Route as ApiPublicHooksBackupDriveRouteImport } from './routes/api/public/hooks/backup-drive'
+import { Route as ApiPublicHooksAutoBackupRouteImport } from './routes/api/public/hooks/auto-backup'
 import { Route as AuthenticatedApotekerPasienIdRouteImport } from './routes/_authenticated/apoteker.pasien.$id'
 
 const AuthRoute = AuthRouteImport.update({
@@ -196,6 +197,12 @@ const ApiPublicHooksBackupDriveRoute =
     path: '/api/public/hooks/backup-drive',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksAutoBackupRoute =
+  ApiPublicHooksAutoBackupRouteImport.update({
+    id: '/api/public/hooks/auto-backup',
+    path: '/api/public/hooks/auto-backup',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedApotekerPasienIdRoute =
   AuthenticatedApotekerPasienIdRouteImport.update({
     id: '/$id',
@@ -229,6 +236,7 @@ export interface FileRoutesByFullPath {
   '/apoteker/': typeof AuthenticatedApotekerIndexRoute
   '/pasien/': typeof AuthenticatedPasienIndexRoute
   '/apoteker/pasien/$id': typeof AuthenticatedApotekerPasienIdRoute
+  '/api/public/hooks/auto-backup': typeof ApiPublicHooksAutoBackupRoute
   '/api/public/hooks/backup-drive': typeof ApiPublicHooksBackupDriveRoute
   '/api/public/hooks/mark-missed': typeof ApiPublicHooksMarkMissedRoute
   '/api/public/hooks/medication-reminders': typeof ApiPublicHooksMedicationRemindersRoute
@@ -256,6 +264,7 @@ export interface FileRoutesByTo {
   '/apoteker': typeof AuthenticatedApotekerIndexRoute
   '/pasien': typeof AuthenticatedPasienIndexRoute
   '/apoteker/pasien/$id': typeof AuthenticatedApotekerPasienIdRoute
+  '/api/public/hooks/auto-backup': typeof ApiPublicHooksAutoBackupRoute
   '/api/public/hooks/backup-drive': typeof ApiPublicHooksBackupDriveRoute
   '/api/public/hooks/mark-missed': typeof ApiPublicHooksMarkMissedRoute
   '/api/public/hooks/medication-reminders': typeof ApiPublicHooksMedicationRemindersRoute
@@ -288,6 +297,7 @@ export interface FileRoutesById {
   '/_authenticated/apoteker/': typeof AuthenticatedApotekerIndexRoute
   '/_authenticated/pasien/': typeof AuthenticatedPasienIndexRoute
   '/_authenticated/apoteker/pasien/$id': typeof AuthenticatedApotekerPasienIdRoute
+  '/api/public/hooks/auto-backup': typeof ApiPublicHooksAutoBackupRoute
   '/api/public/hooks/backup-drive': typeof ApiPublicHooksBackupDriveRoute
   '/api/public/hooks/mark-missed': typeof ApiPublicHooksMarkMissedRoute
   '/api/public/hooks/medication-reminders': typeof ApiPublicHooksMedicationRemindersRoute
@@ -320,6 +330,7 @@ export interface FileRouteTypes {
     | '/apoteker/'
     | '/pasien/'
     | '/apoteker/pasien/$id'
+    | '/api/public/hooks/auto-backup'
     | '/api/public/hooks/backup-drive'
     | '/api/public/hooks/mark-missed'
     | '/api/public/hooks/medication-reminders'
@@ -347,6 +358,7 @@ export interface FileRouteTypes {
     | '/apoteker'
     | '/pasien'
     | '/apoteker/pasien/$id'
+    | '/api/public/hooks/auto-backup'
     | '/api/public/hooks/backup-drive'
     | '/api/public/hooks/mark-missed'
     | '/api/public/hooks/medication-reminders'
@@ -378,6 +390,7 @@ export interface FileRouteTypes {
     | '/_authenticated/apoteker/'
     | '/_authenticated/pasien/'
     | '/_authenticated/apoteker/pasien/$id'
+    | '/api/public/hooks/auto-backup'
     | '/api/public/hooks/backup-drive'
     | '/api/public/hooks/mark-missed'
     | '/api/public/hooks/medication-reminders'
@@ -388,6 +401,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ApiPublicProvisionAccountsRoute: typeof ApiPublicProvisionAccountsRoute
+  ApiPublicHooksAutoBackupRoute: typeof ApiPublicHooksAutoBackupRoute
   ApiPublicHooksBackupDriveRoute: typeof ApiPublicHooksBackupDriveRoute
   ApiPublicHooksMarkMissedRoute: typeof ApiPublicHooksMarkMissedRoute
   ApiPublicHooksMedicationRemindersRoute: typeof ApiPublicHooksMedicationRemindersRoute
@@ -591,6 +605,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksBackupDriveRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/auto-backup': {
+      id: '/api/public/hooks/auto-backup'
+      path: '/api/public/hooks/auto-backup'
+      fullPath: '/api/public/hooks/auto-backup'
+      preLoaderRoute: typeof ApiPublicHooksAutoBackupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/apoteker/pasien/$id': {
       id: '/_authenticated/apoteker/pasien/$id'
       path: '/$id'
@@ -701,6 +722,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ApiPublicProvisionAccountsRoute: ApiPublicProvisionAccountsRoute,
+  ApiPublicHooksAutoBackupRoute: ApiPublicHooksAutoBackupRoute,
   ApiPublicHooksBackupDriveRoute: ApiPublicHooksBackupDriveRoute,
   ApiPublicHooksMarkMissedRoute: ApiPublicHooksMarkMissedRoute,
   ApiPublicHooksMedicationRemindersRoute:
