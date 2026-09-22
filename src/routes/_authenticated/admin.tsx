@@ -5,9 +5,7 @@ import {
   LogOut,
   LayoutDashboard,
   Users,
-  Pill,
   FileClock,
-  ClipboardList,
   DatabaseBackup,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,8 +21,6 @@ type Tab = { to: string; icon: typeof Users; label: string; exact?: boolean };
 const tabs: Tab[] = [
   { to: "/admin", icon: LayoutDashboard, label: "Dashboard", exact: true },
   { to: "/admin/users", icon: Users, label: "Users" },
-  { to: "/admin/skrining", icon: ClipboardList, label: "Skrining" },
-  { to: "/admin/obat", icon: Pill, label: "Obat" },
   { to: "/admin/audit", icon: FileClock, label: "Audit" },
   { to: "/admin/backup", icon: DatabaseBackup, label: "Backup" },
 ];
