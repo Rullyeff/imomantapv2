@@ -44,3 +44,28 @@ export const fetchDriveBackup = createServerFn({ method: "POST" })
     const accounts = Array.isArray(json?.accounts) ? json.accounts : [];
     return { generated_at: json?.generated_at ?? null, tables, accounts };
   });
+
+/** Baca pengaturan backup otomatis. */
+export const getAutoBackupSettings = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context as never);
+    const { readAutoBackupSettings } = await import("./auto-backup.server");
+    return await readAutoBackupSettings();
+  });
+
+/** Ubah mode backup otomatis: off | daily | activity. */
+export const setAutoBackupMode = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { mode: "off" | "daily" | "activity" }) => {
+    const mode = d?.mode;
+    if (mode !== "off" && mode !== "daily" && mode !== "activity") {
+      throw new Error("Mode tidak dikenal");
+    }
+    return { mode };
+  })
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context as never);
+    const { writeAutoBackupSettings } = await import("./auto-backup.server");
+    return await writeAutoBackupSettings({ mode: data.mode }, context.userId);
+  });
