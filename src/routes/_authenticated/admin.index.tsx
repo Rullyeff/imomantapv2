@@ -48,7 +48,7 @@ function AdminDashboard() {
     { label: "Total User", value: s.users, icon: Users, to: "/admin/users" },
     { label: "Total Pengukuran", value: s.measurements, icon: Activity, to: "/admin/users" },
     { label: "Pengukuran Abnormal", value: s.abnormal, icon: AlertTriangle, to: "/admin/users" },
-    { label: "Obat Belum Disetujui", value: s.meds, icon: Pill, to: "/admin/obat" },
+    { label: "Obat Belum Disetujui", value: s.meds, icon: Pill, to: "/admin/users" },
   ];
 
   return (
