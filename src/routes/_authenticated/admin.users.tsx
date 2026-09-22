@@ -19,6 +19,15 @@ export const Route = createFileRoute("/_authenticated/admin/users")({
   component: UsersAdmin,
 });
 
+function Detail({ label, value }: { label: string; value: string | null }) {
+  return (
+    <div>
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="font-medium">{value || "—"}</p>
+    </div>
+  );
+}
+
 type Row = {
   user_id: string;
   full_name: string | null;
