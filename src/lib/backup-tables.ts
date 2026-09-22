@@ -1,0 +1,16 @@
+export const BACKUP_TABLES = [
+  "profiles",
+  "user_roles",
+  "measurements",
+  "health_screenings",
+  "medications",
+  "medication_catalog",
+  "adherence_logs",
+  "appointments",
+  "consultation_requests",
+  "consultation_messages",
+  "educational_content",
+  "patient_logbook",
+  "notification_logs",
+  "system_audit_logs",
+] as const;
