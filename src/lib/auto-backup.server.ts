@@ -58,16 +58,11 @@ export async function hasActivitySince(since: string): Promise<boolean> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   for (const table of BACKUP_TABLES) {
     for (const col of ["updated_at", "created_at"]) {
-      const { data, error } = await supabaseAdmin
+      const { count, error } = await supabaseAdmin
         .from(table as never)
         .select("*", { count: "exact", head: true })
         .gt(col, since);
       if (error) continue;
-      void data;
-      const { count } = await supabaseAdmin
-        .from(table as never)
-        .select("*", { count: "exact", head: true })
-        .gt(col, since);
       if ((count ?? 0) > 0) return true;
     }
   }
