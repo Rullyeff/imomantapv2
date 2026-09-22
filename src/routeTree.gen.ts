@@ -32,15 +32,12 @@ import { Route as AuthenticatedApotekerKonsultasiRouteImport } from './routes/_a
 import { Route as AuthenticatedApotekerKepatuhanRouteImport } from './routes/_authenticated/apoteker.kepatuhan'
 import { Route as AuthenticatedApotekerEdukasiRouteImport } from './routes/_authenticated/apoteker.edukasi'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
-import { Route as AuthenticatedAdminSkriningRouteImport } from './routes/_authenticated/admin.skrining'
-import { Route as AuthenticatedAdminObatRouteImport } from './routes/_authenticated/admin.obat'
 import { Route as AuthenticatedAdminBackupRouteImport } from './routes/_authenticated/admin.backup'
 import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin.audit'
 import { Route as ApiPublicHooksMedicationRemindersRouteImport } from './routes/api/public/hooks/medication-reminders'
 import { Route as ApiPublicHooksMarkMissedRouteImport } from './routes/api/public/hooks/mark-missed'
 import { Route as ApiPublicHooksBackupDriveRouteImport } from './routes/api/public/hooks/backup-drive'
 import { Route as AuthenticatedApotekerPasienIdRouteImport } from './routes/_authenticated/apoteker.pasien.$id'
-import { Route as AuthenticatedAdminPasienSkriningIdRouteImport } from './routes/_authenticated/admin.pasien-skrining.$id'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -170,17 +167,6 @@ const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
-const AuthenticatedAdminSkriningRoute =
-  AuthenticatedAdminSkriningRouteImport.update({
-    id: '/skrining',
-    path: '/skrining',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminObatRoute = AuthenticatedAdminObatRouteImport.update({
-  id: '/obat',
-  path: '/obat',
-  getParentRoute: () => AuthenticatedAdminRoute,
-} as any)
 const AuthenticatedAdminBackupRoute =
   AuthenticatedAdminBackupRouteImport.update({
     id: '/backup',
@@ -216,12 +202,6 @@ const AuthenticatedApotekerPasienIdRoute =
     path: '/$id',
     getParentRoute: () => AuthenticatedApotekerPasienRoute,
   } as any)
-const AuthenticatedAdminPasienSkriningIdRoute =
-  AuthenticatedAdminPasienSkriningIdRouteImport.update({
-    id: '/pasien-skrining/$id',
-    path: '/pasien-skrining/$id',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -231,8 +211,6 @@ export interface FileRoutesByFullPath {
   '/pasien': typeof AuthenticatedPasienRouteWithChildren
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/backup': typeof AuthenticatedAdminBackupRoute
-  '/admin/obat': typeof AuthenticatedAdminObatRoute
-  '/admin/skrining': typeof AuthenticatedAdminSkriningRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/apoteker/edukasi': typeof AuthenticatedApotekerEdukasiRoute
   '/apoteker/kepatuhan': typeof AuthenticatedApotekerKepatuhanRoute
@@ -250,7 +228,6 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/apoteker/': typeof AuthenticatedApotekerIndexRoute
   '/pasien/': typeof AuthenticatedPasienIndexRoute
-  '/admin/pasien-skrining/$id': typeof AuthenticatedAdminPasienSkriningIdRoute
   '/apoteker/pasien/$id': typeof AuthenticatedApotekerPasienIdRoute
   '/api/public/hooks/backup-drive': typeof ApiPublicHooksBackupDriveRoute
   '/api/public/hooks/mark-missed': typeof ApiPublicHooksMarkMissedRoute
@@ -261,8 +238,6 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/backup': typeof AuthenticatedAdminBackupRoute
-  '/admin/obat': typeof AuthenticatedAdminObatRoute
-  '/admin/skrining': typeof AuthenticatedAdminSkriningRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/apoteker/edukasi': typeof AuthenticatedApotekerEdukasiRoute
   '/apoteker/kepatuhan': typeof AuthenticatedApotekerKepatuhanRoute
@@ -280,7 +255,6 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/apoteker': typeof AuthenticatedApotekerIndexRoute
   '/pasien': typeof AuthenticatedPasienIndexRoute
-  '/admin/pasien-skrining/$id': typeof AuthenticatedAdminPasienSkriningIdRoute
   '/apoteker/pasien/$id': typeof AuthenticatedApotekerPasienIdRoute
   '/api/public/hooks/backup-drive': typeof ApiPublicHooksBackupDriveRoute
   '/api/public/hooks/mark-missed': typeof ApiPublicHooksMarkMissedRoute
@@ -296,8 +270,6 @@ export interface FileRoutesById {
   '/_authenticated/pasien': typeof AuthenticatedPasienRouteWithChildren
   '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/_authenticated/admin/backup': typeof AuthenticatedAdminBackupRoute
-  '/_authenticated/admin/obat': typeof AuthenticatedAdminObatRoute
-  '/_authenticated/admin/skrining': typeof AuthenticatedAdminSkriningRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/apoteker/edukasi': typeof AuthenticatedApotekerEdukasiRoute
   '/_authenticated/apoteker/kepatuhan': typeof AuthenticatedApotekerKepatuhanRoute
@@ -315,7 +287,6 @@ export interface FileRoutesById {
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/apoteker/': typeof AuthenticatedApotekerIndexRoute
   '/_authenticated/pasien/': typeof AuthenticatedPasienIndexRoute
-  '/_authenticated/admin/pasien-skrining/$id': typeof AuthenticatedAdminPasienSkriningIdRoute
   '/_authenticated/apoteker/pasien/$id': typeof AuthenticatedApotekerPasienIdRoute
   '/api/public/hooks/backup-drive': typeof ApiPublicHooksBackupDriveRoute
   '/api/public/hooks/mark-missed': typeof ApiPublicHooksMarkMissedRoute
@@ -331,8 +302,6 @@ export interface FileRouteTypes {
     | '/pasien'
     | '/admin/audit'
     | '/admin/backup'
-    | '/admin/obat'
-    | '/admin/skrining'
     | '/admin/users'
     | '/apoteker/edukasi'
     | '/apoteker/kepatuhan'
@@ -350,7 +319,6 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/apoteker/'
     | '/pasien/'
-    | '/admin/pasien-skrining/$id'
     | '/apoteker/pasien/$id'
     | '/api/public/hooks/backup-drive'
     | '/api/public/hooks/mark-missed'
@@ -361,8 +329,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/admin/audit'
     | '/admin/backup'
-    | '/admin/obat'
-    | '/admin/skrining'
     | '/admin/users'
     | '/apoteker/edukasi'
     | '/apoteker/kepatuhan'
@@ -380,7 +346,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/apoteker'
     | '/pasien'
-    | '/admin/pasien-skrining/$id'
     | '/apoteker/pasien/$id'
     | '/api/public/hooks/backup-drive'
     | '/api/public/hooks/mark-missed'
@@ -395,8 +360,6 @@ export interface FileRouteTypes {
     | '/_authenticated/pasien'
     | '/_authenticated/admin/audit'
     | '/_authenticated/admin/backup'
-    | '/_authenticated/admin/obat'
-    | '/_authenticated/admin/skrining'
     | '/_authenticated/admin/users'
     | '/_authenticated/apoteker/edukasi'
     | '/_authenticated/apoteker/kepatuhan'
@@ -414,7 +377,6 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/'
     | '/_authenticated/apoteker/'
     | '/_authenticated/pasien/'
-    | '/_authenticated/admin/pasien-skrining/$id'
     | '/_authenticated/apoteker/pasien/$id'
     | '/api/public/hooks/backup-drive'
     | '/api/public/hooks/mark-missed'
@@ -594,20 +556,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/_authenticated/admin/skrining': {
-      id: '/_authenticated/admin/skrining'
-      path: '/skrining'
-      fullPath: '/admin/skrining'
-      preLoaderRoute: typeof AuthenticatedAdminSkriningRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/obat': {
-      id: '/_authenticated/admin/obat'
-      path: '/obat'
-      fullPath: '/admin/obat'
-      preLoaderRoute: typeof AuthenticatedAdminObatRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
     '/_authenticated/admin/backup': {
       id: '/_authenticated/admin/backup'
       path: '/backup'
@@ -650,35 +598,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedApotekerPasienIdRouteImport
       parentRoute: typeof AuthenticatedApotekerPasienRoute
     }
-    '/_authenticated/admin/pasien-skrining/$id': {
-      id: '/_authenticated/admin/pasien-skrining/$id'
-      path: '/pasien-skrining/$id'
-      fullPath: '/admin/pasien-skrining/$id'
-      preLoaderRoute: typeof AuthenticatedAdminPasienSkriningIdRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
   }
 }
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
   AuthenticatedAdminBackupRoute: typeof AuthenticatedAdminBackupRoute
-  AuthenticatedAdminObatRoute: typeof AuthenticatedAdminObatRoute
-  AuthenticatedAdminSkriningRoute: typeof AuthenticatedAdminSkriningRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
-  AuthenticatedAdminPasienSkriningIdRoute: typeof AuthenticatedAdminPasienSkriningIdRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
   AuthenticatedAdminBackupRoute: AuthenticatedAdminBackupRoute,
-  AuthenticatedAdminObatRoute: AuthenticatedAdminObatRoute,
-  AuthenticatedAdminSkriningRoute: AuthenticatedAdminSkriningRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
-  AuthenticatedAdminPasienSkriningIdRoute:
-    AuthenticatedAdminPasienSkriningIdRoute,
 }
 
 const AuthenticatedAdminRouteWithChildren =
