@@ -42,6 +42,7 @@ function UsersAdmin() {
   const [rows, setRows] = useState<Row[]>([]);
   const [q, setQ] = useState("");
   const [resetting, setResetting] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState<string | null>(null);
   const resetPassword = useServerFn(resetUserPassword);
 
   async function handleReset(r: Row) {
