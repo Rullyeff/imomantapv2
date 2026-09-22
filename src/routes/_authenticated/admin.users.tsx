@@ -13,7 +13,7 @@ import {
 import { toast } from "sonner";
 import { Search, KeyRound, UserRound } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { resetUserPassword } from "@/lib/admin-users.functions";
+import { resetUserPassword, getUserEmails } from "@/lib/admin-users.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/users")({
   component: UsersAdmin,
@@ -45,6 +45,8 @@ type Row = {
   target_gula_puasa: number | null;
   target_gula_pp: number | null;
   target_asam_urat: number | null;
+  email?: string;
+  kode?: string | null;
 };
 
 function UsersAdmin() {
@@ -53,6 +55,7 @@ function UsersAdmin() {
   const [resetting, setResetting] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
   const resetPassword = useServerFn(resetUserPassword);
+  const fetchEmails = useServerFn(getUserEmails);
 
   async function handleReset(r: Row) {
     const pw = window.prompt(
@@ -71,15 +74,31 @@ function UsersAdmin() {
   }
 
   async function load() {
-    const [{ data: profs }, { data: roles }] = await Promise.all([
+    const [{ data: profs }, { data: roles }, { data: scr }] = await Promise.all([
       supabase.from("profiles").select("user_id, full_name, phone_number, is_verified, age, gender, weight, height, address, emergency_contact, target_sistolik, target_diastolik, target_gula_puasa, target_gula_pp, target_asam_urat"),
       supabase.from("user_roles").select("user_id, role"),
+      supabase.from("health_screenings").select("user_id, respondent_code").not("user_id", "is", null),
     ]);
     const roleMap: Record<string, string> = {};
     (roles ?? []).forEach((r: any) => {
       roleMap[r.user_id] = r.role;
     });
-    setRows(((profs ?? []) as any[]).map((p) => ({ ...p, role: roleMap[p.user_id] || "pasien" })));
+    const kodeMap: Record<string, string> = {};
+    (scr ?? []).forEach((s: any) => {
+      if (s.user_id && !kodeMap[s.user_id]) kodeMap[s.user_id] = s.respondent_code;
+    });
+    const base = ((profs ?? []) as any[]).map((p) => ({
+      ...p,
+      role: roleMap[p.user_id] || "pasien",
+      kode: kodeMap[p.user_id] ?? null,
+    }));
+    setRows(base);
+    try {
+      const emailMap = await fetchEmails({ data: { userIds: base.map((b: any) => b.user_id) } });
+      setRows((prev) => prev.map((r) => ({ ...r, email: emailMap[r.user_id] })));
+    } catch {
+      /* email hanya untuk admin */
+    }
   }
   useEffect(() => {
     load();
@@ -104,7 +123,11 @@ function UsersAdmin() {
   }
 
   const filtered = rows.filter(
-    (r) => !q || (r.full_name ?? "").toLowerCase().includes(q.toLowerCase()),
+    (r) =>
+      !q ||
+      (r.full_name ?? "").toLowerCase().includes(q.toLowerCase()) ||
+      (r.email ?? "").toLowerCase().includes(q.toLowerCase()) ||
+      (r.kode ?? "").toLowerCase().includes(q.toLowerCase()),
   );
 
   return (
@@ -126,7 +149,7 @@ function UsersAdmin() {
               <div className="min-w-0">
                 <p className="font-medium truncate">{r.full_name || "(tanpa nama)"}</p>
                 <p className="text-xs text-muted-foreground">
-                  {r.phone_number || "—"} · {r.is_verified ? "Verified" : "Belum verifikasi"}
+                  {r.kode ? `Kode ${r.kode} · ` : ""}{r.phone_number || "—"} · {r.is_verified ? "Verified" : "Belum verifikasi"}
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -161,6 +184,8 @@ function UsersAdmin() {
             </div>
             {expanded === r.user_id && (
               <div className="mt-3 grid gap-x-6 gap-y-2 rounded-lg bg-secondary/50 p-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
+                <Detail label="Email Login" value={r.email ?? null} />
+                <Detail label="Kode Pasien" value={r.kode ?? null} />
                 <Detail label="Usia" value={r.age != null ? `${r.age} tahun` : null} />
                 <Detail
                   label="Jenis Kelamin"
