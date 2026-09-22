@@ -123,7 +123,11 @@ function UsersAdmin() {
   }
 
   const filtered = rows.filter(
-    (r) => !q || (r.full_name ?? "").toLowerCase().includes(q.toLowerCase()),
+    (r) =>
+      !q ||
+      (r.full_name ?? "").toLowerCase().includes(q.toLowerCase()) ||
+      (r.email ?? "").toLowerCase().includes(q.toLowerCase()) ||
+      (r.kode ?? "").toLowerCase().includes(q.toLowerCase()),
   );
 
   return (
@@ -145,7 +149,7 @@ function UsersAdmin() {
               <div className="min-w-0">
                 <p className="font-medium truncate">{r.full_name || "(tanpa nama)"}</p>
                 <p className="text-xs text-muted-foreground">
-                  {r.phone_number || "—"} · {r.is_verified ? "Verified" : "Belum verifikasi"}
+                  {r.kode ? `Kode ${r.kode} · ` : ""}{r.phone_number || "—"} · {r.is_verified ? "Verified" : "Belum verifikasi"}
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -180,6 +184,8 @@ function UsersAdmin() {
             </div>
             {expanded === r.user_id && (
               <div className="mt-3 grid gap-x-6 gap-y-2 rounded-lg bg-secondary/50 p-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
+                <Detail label="Email Login" value={r.email ?? null} />
+                <Detail label="Kode Pasien" value={r.kode ?? null} />
                 <Detail label="Usia" value={r.age != null ? `${r.age} tahun` : null} />
                 <Detail
                   label="Jenis Kelamin"
